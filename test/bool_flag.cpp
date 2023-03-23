@@ -1,14 +1,14 @@
 #include "envflag/envflag.hpp"
 #include <iostream>
 
-IMPORT_STR_FLAG(str_flag);
+IMPORT_BOOL_FLAG(bool_flag);
 
 using namespace std;
 
 int main() {
-    auto x = str_flag();
+    auto x = bool_flag();
     if (x) {
-        cout << *x;
+        cout << boolalpha << *x;
         return 0;
     } else {
         return 1;

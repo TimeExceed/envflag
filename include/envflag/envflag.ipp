@@ -30,25 +30,37 @@
 #error "envflag.ipp" must not be included. Include "envflag.hpp" instead.
 #endif
 
-#include <string>
-#include <optional>
+#include <cinttypes>
 
 namespace envflag {
 
-class StrFlag {
+
+class StrFlag: public FlagWithDefaultAndParser<::std::string_view> {
 public:
+    typedef FlagWithDefaultAndParser<::std::string_view> ParentType;
     explicit StrFlag(char const * name) noexcept;
-    ~StrFlag() =default;
+    explicit StrFlag(char const * name, char const* default_value) noexcept;
+};
 
-    StrFlag(const StrFlag&) =delete;
-    StrFlag& operator=(const StrFlag&) =delete;
-    StrFlag(StrFlag&&) =delete;
-    StrFlag& operator=(StrFlag&&) =delete;
+class I64Flag: public FlagWithDefaultAndParser<int64_t> {
+public:
+    typedef FlagWithDefaultAndParser<int64_t> ParentType;
+    explicit I64Flag(char const * name) noexcept;
+    explicit I64Flag(char const * name, int64_t default_value) noexcept;
+};
 
-    ::std::optional<::std::string> operator()() const noexcept;
+class F64Flag: public FlagWithDefaultAndParser<double> {
+public:
+    typedef FlagWithDefaultAndParser<double> ParentType;
+    explicit F64Flag(char const * name) noexcept;
+    explicit F64Flag(char const * name, double default_value) noexcept;
+};
 
-private:
-    ::std::string name_;
+class BoolFlag: public FlagWithDefaultAndParser<bool> {
+public:
+    typedef FlagWithDefaultAndParser<bool> ParentType;
+    explicit BoolFlag(char const * name) noexcept;
+    explicit BoolFlag(char const * name, bool default_value) noexcept;
 };
 
 } // namespace envflag
