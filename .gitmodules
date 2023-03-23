@@ -1,0 +1,6 @@
+[submodule "testa"]
+	path = testa
+	url = git@github.com:TimeExceed/testa.git
+[submodule "fancy_assert"]
+	path = fancy_assert
+	url = git@github.com:TimeExceed/fancy_assert.git
