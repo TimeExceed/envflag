@@ -30,6 +30,8 @@
 #ifndef ENVFLAG_HPP
 #define ENVFLAG_HPP
 
+#include "fassert.hpp"
+#include <typeinfo>
 #include <functional>
 #include <string_view>
 #include <optional>
@@ -46,10 +48,10 @@ public:
     explicit RawFlag(char const * name) noexcept;
 
     ::std::optional<::std::string_view> operator()() const noexcept;
-    ::std::string_view name_;
+    const char* name_;
 };
 
-template<typename T>
+template<typename T, typename Inherited>
 class FlagWithDefaultAndParser {
 public:
     typedef T ReturnType;
@@ -60,22 +62,30 @@ public:
     FlagWithDefaultAndParser& operator=(FlagWithDefaultAndParser&&) =delete;
 
     explicit FlagWithDefaultAndParser(
-        ::std::function<T(const ::std::string_view&, const ::std::string_view&)> parser,
+        ::std::function<T(const char*, const ::std::string_view&)> parser,
         const char* name) noexcept
-    :   parser_(std::move(parser)),
+    :   defined_type_(typeid(Inherited).name()),
+        parser_(std::move(parser)),
         raw_flag_(name)
     {}
 
     explicit FlagWithDefaultAndParser(
-        ::std::function<T(const ::std::string_view&, const ::std::string_view&)> parser,
+        ::std::function<T(const char*, const ::std::string_view&)> parser,
         const char* name,
         T default_value) noexcept
-    :   parser_(std::move(parser)),
+    :   defined_type_(typeid(Inherited).name()),
+        parser_(std::move(parser)),
         raw_flag_(name),
         default_value_(std::move(default_value))
     {}
 
     ::std::optional<T> operator()() const noexcept {
+        auto import_type = typeid(Inherited).name();
+        FASSERT(import_type == defined_type_)
+            (raw_flag_.name_)
+            (import_type)
+            (defined_type_)
+            .what("A flag has different types between its definition and importation.");
         auto res = raw_flag_();
         if (res) {
             return std::move(parser_(raw_flag_.name_, *res));
@@ -85,7 +95,8 @@ public:
     }
 
 private:
-    ::std::function<T(const ::std::string_view&, const ::std::string_view&)> parser_;
+    char const * defined_type_;
+    ::std::function<T(const char*, const ::std::string_view&)> parser_;
     RawFlag raw_flag_;
     ::std::optional<T> default_value_;
 };

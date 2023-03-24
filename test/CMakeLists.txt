@@ -1,6 +1,5 @@
 find_package(jsoncpp QUIET)
 if(jsoncpp_FOUND)
-    message(STATUS "found jsoncpp: ${jsoncpp_VERSION}")
     add_compile_options(-DENVFLAG_ENABLE_JSONCPP)
 endif()
 
