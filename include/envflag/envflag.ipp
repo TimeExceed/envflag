@@ -39,38 +39,38 @@
 namespace envflag {
 
 
-class StrFlag: public FlagWithDefaultAndParser<::std::string_view> {
+class StrFlag: public FlagWithDefaultAndParser<::std::string_view, StrFlag> {
 public:
-    typedef FlagWithDefaultAndParser<::std::string_view> ParentType;
+    typedef FlagWithDefaultAndParser<::std::string_view, StrFlag> ParentType;
     explicit StrFlag(char const * name) noexcept;
     explicit StrFlag(char const * name, char const* default_value) noexcept;
 };
 
-class I64Flag: public FlagWithDefaultAndParser<int64_t> {
+class I64Flag: public FlagWithDefaultAndParser<int64_t, I64Flag> {
 public:
-    typedef FlagWithDefaultAndParser<int64_t> ParentType;
+    typedef FlagWithDefaultAndParser<int64_t, I64Flag> ParentType;
     explicit I64Flag(char const * name) noexcept;
     explicit I64Flag(char const * name, int64_t default_value) noexcept;
 };
 
-class F64Flag: public FlagWithDefaultAndParser<double> {
+class F64Flag: public FlagWithDefaultAndParser<double, F64Flag> {
 public:
-    typedef FlagWithDefaultAndParser<double> ParentType;
+    typedef FlagWithDefaultAndParser<double, F64Flag> ParentType;
     explicit F64Flag(char const * name) noexcept;
     explicit F64Flag(char const * name, double default_value) noexcept;
 };
 
-class BoolFlag: public FlagWithDefaultAndParser<bool> {
+class BoolFlag: public FlagWithDefaultAndParser<bool, BoolFlag> {
 public:
-    typedef FlagWithDefaultAndParser<bool> ParentType;
+    typedef FlagWithDefaultAndParser<bool, BoolFlag> ParentType;
     explicit BoolFlag(char const * name) noexcept;
     explicit BoolFlag(char const * name, bool default_value) noexcept;
 };
 
 #ifdef ENVFLAG_ENABLE_JSONCPP
-class JsonFlag: public FlagWithDefaultAndParser<::Json::Value> {
+class JsonFlag: public FlagWithDefaultAndParser<::Json::Value, JsonFlag> {
 public:
-    typedef FlagWithDefaultAndParser<::Json::Value> ParentType;
+    typedef FlagWithDefaultAndParser<::Json::Value, JsonFlag> ParentType;
     explicit JsonFlag(char const * name) noexcept;
     explicit JsonFlag(char const * name, char const* default_value) noexcept;
 };

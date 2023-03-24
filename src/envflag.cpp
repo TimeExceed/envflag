@@ -19,7 +19,7 @@ RawFlag::RawFlag(char const * name) noexcept
 {}
 
 optional<string_view> RawFlag::operator()() const noexcept {
-    auto res = std::getenv(name_.data());
+    auto res = std::getenv(name_);
     if (res == nullptr) {
         return nullopt;
     } else {
@@ -47,7 +47,7 @@ StrFlag::StrFlag(
 
 namespace {
 
-int64_t parse_i64(const string_view& name, const string_view& str) noexcept {
+int64_t parse_i64(const char* name, const string_view& str) noexcept {
     int64_t result = 0;
     auto [ptr, ec] { from_chars(str.data(), str.data() + str.size(), result) };
     if (ec == std::errc::invalid_argument) {
@@ -81,7 +81,7 @@ I64Flag::I64Flag(
 
 namespace {
 
-bool parse_bool(const string_view& name, const string_view& value) noexcept {
+bool parse_bool(const char* name, const string_view& value) noexcept {
     const char TRUE[] = "true";
     const size_t TRUE_LEN = sizeof(TRUE) / sizeof(TRUE[0]) - 1;
     const char FALSE[] = "false";
@@ -114,7 +114,7 @@ BoolFlag::BoolFlag(
 {}
 
 namespace {
-double parse_f64(const string_view& name, const string_view& value) noexcept {
+double parse_f64(const char* name, const string_view& value) noexcept {
     double res = 0;
     const char* s = value.data();
     const char* e = s + value.size();
@@ -154,7 +154,7 @@ F64Flag::F64Flag(
 
 namespace {
 
-::Json::Value parse_json(const string_view& name, const string_view& value) noexcept {
+::Json::Value parse_json(const char* name, const string_view& value) noexcept {
     ::Json::Value res;
     ::Json::CharReaderBuilder builder;
     builder["collectComments"] = false;
