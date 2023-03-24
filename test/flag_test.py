@@ -109,5 +109,30 @@ def f64_flag_w_default():
     out = sp.check_output([exe], env={})
     return out
 
+
+@testa.is_(expect=b'1.2')
+def json_flag():
+    exe = BASE_DIR.joinpath('json_flag')
+    out = sp.check_output([exe], env={'json_flag': '1.2'})
+    return out
+
+@testa.throw(throw=sp.CalledProcessError)
+def missing_json_flag():
+    exe = BASE_DIR.joinpath('json_flag')
+    out = sp.check_output([exe], env={})
+    return out
+
+@testa.is_(expect=b'1.2')
+def json_flag_w_default_set():
+    exe = BASE_DIR.joinpath('json_flag_with_default')
+    out = sp.check_output([exe], env={'json_flag_with_default': '1.2'})
+    return out
+
+@testa.is_(expect=b'[123]')
+def json_flag_w_default():
+    exe = BASE_DIR.joinpath('json_flag_with_default')
+    out = sp.check_output([exe], env={})
+    return out
+
 if __name__ == '__main__':
     testa.main()

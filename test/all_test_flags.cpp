@@ -24,3 +24,10 @@ DEFINE_F64_FLAG_WITH_DEFAULT(f64_flag_with_default,
     "a f64(double) flag for testing",
     123.0);
 
+#ifdef ENVFLAG_ENABLE_JSONCPP
+DEFINE_JSON_FLAG(json_flag,
+    "a json flag for testing");
+DEFINE_JSON_FLAG_WITH_DEFAULT(json_flag_with_default,
+    "a json flag for testing",
+    "[123]");
+#endif
