@@ -1,5 +1,11 @@
 #include "envflag/envflag.hpp"
+
+#ifdef ENVFLAG_ENABLE_JSONCPP
+#include <json/reader.h>
+#endif
+
 #include "fassert.hpp"
+#include <memory>
 #include <charconv>
 #include <cstdlib>
 #include <cctype>
@@ -143,6 +149,35 @@ F64Flag::F64Flag(
     double default_value) noexcept
 :   ParentType(parse_f64, name, default_value)
 {}
+
+#ifdef ENVFLAG_ENABLE_JSONCPP
+
+namespace {
+
+::Json::Value parse_json(const string_view& name, const string_view& value) noexcept {
+    ::Json::Value res;
+    ::Json::CharReaderBuilder builder;
+    builder["collectComments"] = false;
+    unique_ptr<::Json::CharReader> reader(builder.newCharReader());
+    ::Json::String errs;
+    bool ok = reader->parse(value.data(), value.data() + value.size(), &res, &errs);
+    FASSERT(ok)
+        (name)
+        (value)
+        (errs)
+        .what("Invalid JSON text");
+    return res;
+}
+
+} // namespace
+
+JsonFlag::JsonFlag(char const * name) noexcept
+:   ParentType(parse_json, name)
+{}
+JsonFlag::JsonFlag(char const * name, char const* default_value) noexcept
+:   ParentType(parse_json, name, parse_json(name, default_value))
+{}
+#endif
 
 } // namespace envflag
 

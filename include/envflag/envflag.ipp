@@ -32,6 +32,10 @@
 
 #include <cinttypes>
 
+#ifdef ENVFLAG_ENABLE_JSONCPP
+#include <json/value.h>
+#endif
+
 namespace envflag {
 
 
@@ -62,5 +66,14 @@ public:
     explicit BoolFlag(char const * name) noexcept;
     explicit BoolFlag(char const * name, bool default_value) noexcept;
 };
+
+#ifdef ENVFLAG_ENABLE_JSONCPP
+class JsonFlag: public FlagWithDefaultAndParser<::Json::Value> {
+public:
+    typedef FlagWithDefaultAndParser<::Json::Value> ParentType;
+    explicit JsonFlag(char const * name) noexcept;
+    explicit JsonFlag(char const * name, char const* default_value) noexcept;
+};
+#endif
 
 } // namespace envflag

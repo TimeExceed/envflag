@@ -123,5 +123,14 @@ private:
 #define IMPORT_BOOL_FLAG(flag) \
     extern ::envflag::BoolFlag flag;
 
+#ifdef ENVFLAG_ENABLE_JSONCPP
+#define DEFINE_JSON_FLAG(flag, _usage) \
+    ::envflag::JsonFlag flag(#flag);
+#define DEFINE_JSON_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::JsonFlag flag(#flag, default_value);
+#define IMPORT_JSON_FLAG(flag) \
+    extern ::envflag::JsonFlag flag;
+#endif
+
 #undef IN_ENVFLAG_HPP
 #endif /* ENVFLAG_HPP */
