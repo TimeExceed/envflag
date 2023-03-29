@@ -39,41 +39,67 @@
 namespace envflag {
 
 
-class StrFlag: public FlagWithDefaultAndParser<::std::string_view, StrFlag> {
+class StrFlag: public FlagWithParser<::std::string_view, StrFlag> {
 public:
-    typedef FlagWithDefaultAndParser<::std::string_view, StrFlag> ParentType;
+    typedef FlagWithParser<::std::string_view, StrFlag> ParentType;
     explicit StrFlag(char const * name) noexcept;
-    explicit StrFlag(char const * name, char const* default_value) noexcept;
 };
 
-class I64Flag: public FlagWithDefaultAndParser<int64_t, I64Flag> {
+class DefaultedStrFlag: public FlagWithDefault<::std::string_view, DefaultedStrFlag> {
 public:
-    typedef FlagWithDefaultAndParser<int64_t, I64Flag> ParentType;
+    typedef FlagWithDefault<::std::string_view, DefaultedStrFlag> ParentType;
+    explicit DefaultedStrFlag(char const * name, char const* default_value) noexcept;
+};
+
+class I64Flag: public FlagWithParser<int64_t, I64Flag> {
+public:
+    typedef FlagWithParser<int64_t, I64Flag> ParentType;
     explicit I64Flag(char const * name) noexcept;
-    explicit I64Flag(char const * name, int64_t default_value) noexcept;
 };
 
-class F64Flag: public FlagWithDefaultAndParser<double, F64Flag> {
+class DefaultedI64Flag: public FlagWithDefault<int64_t, DefaultedI64Flag> {
 public:
-    typedef FlagWithDefaultAndParser<double, F64Flag> ParentType;
+    typedef FlagWithDefault<int64_t, DefaultedI64Flag> ParentType;
+    explicit DefaultedI64Flag(char const * name, int64_t default_value) noexcept;
+};
+
+class F64Flag: public FlagWithParser<double, F64Flag> {
+public:
+    typedef FlagWithParser<double, F64Flag> ParentType;
     explicit F64Flag(char const * name) noexcept;
-    explicit F64Flag(char const * name, double default_value) noexcept;
 };
 
-class BoolFlag: public FlagWithDefaultAndParser<bool, BoolFlag> {
+class DefaultedF64Flag: public FlagWithDefault<double, DefaultedF64Flag> {
 public:
-    typedef FlagWithDefaultAndParser<bool, BoolFlag> ParentType;
+    typedef FlagWithDefault<double, DefaultedF64Flag> ParentType;
+    explicit DefaultedF64Flag(char const * name, double default_value) noexcept;
+};
+
+class BoolFlag: public FlagWithParser<bool, BoolFlag> {
+public:
+    typedef FlagWithParser<bool, BoolFlag> ParentType;
     explicit BoolFlag(char const * name) noexcept;
-    explicit BoolFlag(char const * name, bool default_value) noexcept;
+};
+
+class DefaultedBoolFlag: public FlagWithDefault<bool, DefaultedBoolFlag> {
+public:
+    typedef FlagWithDefault<bool, DefaultedBoolFlag> ParentType;
+    explicit DefaultedBoolFlag(char const * name, bool default_value) noexcept;
 };
 
 #ifdef ENVFLAG_ENABLE_JSONCPP
-class JsonFlag: public FlagWithDefaultAndParser<::Json::Value, JsonFlag> {
+class JsonFlag: public FlagWithParser<::Json::Value, JsonFlag> {
 public:
-    typedef FlagWithDefaultAndParser<::Json::Value, JsonFlag> ParentType;
+    typedef FlagWithParser<::Json::Value, JsonFlag> ParentType;
     explicit JsonFlag(char const * name) noexcept;
-    explicit JsonFlag(char const * name, char const* default_value) noexcept;
 };
+
+class DefaultedJsonFlag: public FlagWithDefault<::Json::Value, JsonFlag> {
+public:
+    typedef FlagWithDefault<::Json::Value, JsonFlag> ParentType;
+    explicit DefaultedJsonFlag(char const * name, char const* default_value) noexcept;
+};
+
 #endif
 
 } // namespace envflag

@@ -39,7 +39,7 @@ StrFlag::StrFlag(char const * name) noexcept
 :   ParentType(sv_identiy, name)
 {}
 
-StrFlag::StrFlag(
+DefaultedStrFlag::DefaultedStrFlag(
     char const * name,
     char const * default_value) noexcept
 :   ParentType(sv_identiy, name, default_value)
@@ -73,7 +73,7 @@ I64Flag::I64Flag(char const * name) noexcept
 :   ParentType(parse_i64, name)
 {}
 
-I64Flag::I64Flag(
+DefaultedI64Flag::DefaultedI64Flag(
     char const * name,
     int64_t default_value) noexcept
 :   ParentType(parse_i64, name, default_value)
@@ -107,7 +107,7 @@ BoolFlag::BoolFlag(char const * name) noexcept
 :   ParentType(parse_bool, name)
 {}
 
-BoolFlag::BoolFlag(
+DefaultedBoolFlag::DefaultedBoolFlag(
     char const * name,
     bool default_value) noexcept
 :   ParentType(parse_bool, name, default_value)
@@ -144,7 +144,7 @@ F64Flag::F64Flag(char const * name) noexcept
 :   ParentType(parse_f64, name)
 {}
 
-F64Flag::F64Flag(
+DefaultedF64Flag::DefaultedF64Flag(
     char const * name,
     double default_value) noexcept
 :   ParentType(parse_f64, name, default_value)
@@ -174,7 +174,8 @@ namespace {
 JsonFlag::JsonFlag(char const * name) noexcept
 :   ParentType(parse_json, name)
 {}
-JsonFlag::JsonFlag(char const * name, char const* default_value) noexcept
+
+DefaultedJsonFlag::DefaultedJsonFlag(char const * name, char const* default_value) noexcept
 :   ParentType(parse_json, name, parse_json(name, default_value))
 {}
 #endif
