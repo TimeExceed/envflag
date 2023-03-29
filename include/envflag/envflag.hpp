@@ -51,36 +51,26 @@ public:
     const char* name_;
 };
 
-template<typename T, typename Inherited>
-class FlagWithDefaultAndParser {
+template<typename T, typename ConcreteClass>
+class FlagWithParser {
 public:
     typedef T ReturnType;
 
-    FlagWithDefaultAndParser(const FlagWithDefaultAndParser&) =delete;
-    FlagWithDefaultAndParser& operator=(const FlagWithDefaultAndParser&) =delete;
-    FlagWithDefaultAndParser(FlagWithDefaultAndParser&&) =delete;
-    FlagWithDefaultAndParser& operator=(FlagWithDefaultAndParser&&) =delete;
+    FlagWithParser(const FlagWithParser&) =delete;
+    FlagWithParser& operator=(const FlagWithParser&) =delete;
+    FlagWithParser(FlagWithParser&&) =delete;
+    FlagWithParser& operator=(FlagWithParser&&) =delete;
 
-    explicit FlagWithDefaultAndParser(
+    explicit FlagWithParser(
         ::std::function<T(const char*, const ::std::string_view&)> parser,
         const char* name) noexcept
-    :   defined_type_(typeid(Inherited).name()),
+    :   defined_type_(typeid(ConcreteClass).name()),
         parser_(std::move(parser)),
         raw_flag_(name)
     {}
 
-    explicit FlagWithDefaultAndParser(
-        ::std::function<T(const char*, const ::std::string_view&)> parser,
-        const char* name,
-        T default_value) noexcept
-    :   defined_type_(typeid(Inherited).name()),
-        parser_(std::move(parser)),
-        raw_flag_(name),
-        default_value_(std::move(default_value))
-    {}
-
     ::std::optional<T> operator()() const noexcept {
-        auto import_type = typeid(Inherited).name();
+        auto import_type = typeid(ConcreteClass).name();
         FASSERT(import_type == defined_type_)
             (raw_flag_.name_)
             (import_type)
@@ -90,7 +80,7 @@ public:
         if (res) {
             return std::move(parser_(raw_flag_.name_, *res));
         } else {
-            return default_value_;
+            return std::nullopt;
         }
     }
 
@@ -98,7 +88,33 @@ private:
     char const * defined_type_;
     ::std::function<T(const char*, const ::std::string_view&)> parser_;
     RawFlag raw_flag_;
-    ::std::optional<T> default_value_;
+};
+
+template<typename T, typename ConcreteClass>
+class FlagWithDefault {
+public:
+    typedef T ReturnType;
+
+    explicit FlagWithDefault(
+        ::std::function<T(const char*, const ::std::string_view&)> parser,
+        const char* name,
+        T default_value) noexcept
+    :   flag_(parser, name),
+        default_value_(std::move(default_value))
+    {}
+
+    T operator()() const noexcept {
+        auto res = flag_();
+        if (res) {
+            return std::move(*res);
+        } else {
+            return default_value_;
+        }
+    }
+
+private:
+    FlagWithParser<T, ConcreteClass> flag_;
+    ReturnType default_value_;
 };
 
 } // namespace envflag
@@ -108,39 +124,49 @@ private:
 
 #define DEFINE_STR_FLAG(flag, _usage) \
     ::envflag::StrFlag flag(#flag);
-#define DEFINE_STR_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
-    ::envflag::StrFlag flag(#flag, default_value);
 #define IMPORT_STR_FLAG(flag) \
     extern ::envflag::StrFlag flag;
+#define DEFINE_STR_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::DefaultedStrFlag flag(#flag, default_value);
+#define IMPORT_STR_FLAG_WITH_DEFAULT(flag) \
+    extern ::envflag::DefaultedStrFlag flag;
 
 #define DEFINE_I64_FLAG(flag, _usage) \
     ::envflag::I64Flag flag(#flag);
-#define DEFINE_I64_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
-    ::envflag::I64Flag flag(#flag, default_value);
 #define IMPORT_I64_FLAG(flag) \
     extern ::envflag::I64Flag flag;
+#define DEFINE_I64_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::DefaultedI64Flag flag(#flag, default_value);
+#define IMPORT_I64_FLAG_WITH_DEFAULT(flag) \
+    extern ::envflag::DefaultedI64Flag flag;
 
 #define DEFINE_F64_FLAG(flag, _usage) \
     ::envflag::F64Flag flag(#flag);
-#define DEFINE_F64_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
-    ::envflag::F64Flag flag(#flag, default_value);
 #define IMPORT_F64_FLAG(flag) \
     extern ::envflag::F64Flag flag;
+#define DEFINE_F64_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::DefaultedF64Flag flag(#flag, default_value);
+#define IMPORT_F64_FLAG_WITH_DEFAULT(flag) \
+    extern ::envflag::DefaultedF64Flag flag;
 
 #define DEFINE_BOOL_FLAG(flag, _usage) \
     ::envflag::BoolFlag flag(#flag);
-#define DEFINE_BOOL_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
-    ::envflag::BoolFlag flag(#flag, default_value);
 #define IMPORT_BOOL_FLAG(flag) \
     extern ::envflag::BoolFlag flag;
+#define DEFINE_BOOL_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::DefaultedBoolFlag flag(#flag, default_value);
+#define IMPORT_BOOL_FLAG_WITH_DEFAULT(flag) \
+    extern ::envflag::DefaultedBoolFlag flag;
 
 #ifdef ENVFLAG_ENABLE_JSONCPP
 #define DEFINE_JSON_FLAG(flag, _usage) \
     ::envflag::JsonFlag flag(#flag);
-#define DEFINE_JSON_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
-    ::envflag::JsonFlag flag(#flag, default_value);
 #define IMPORT_JSON_FLAG(flag) \
     extern ::envflag::JsonFlag flag;
+#define DEFINE_JSON_FLAG_WITH_DEFAULT(flag, _usage, default_value) \
+    ::envflag::DefaultedJsonFlag flag(#flag, default_value);
+#define IMPORT_JSON_FLAG_WITH_DEFAULT(flag) \
+    extern ::envflag::DefaultedJsonFlag flag;
 #endif
 
 #undef IN_ENVFLAG_HPP
