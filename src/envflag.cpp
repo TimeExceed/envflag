@@ -132,6 +132,7 @@ double parse_f64(const char* name, const string_view& value) noexcept {
     for(++s; s < e && isdigit(*s); ++s) {
         double d = *s - '0';
         res += base * d;
+        base *= 0.1;
     }
     FASSERT(s == e)
         (*s)
