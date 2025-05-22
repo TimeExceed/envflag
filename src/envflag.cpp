@@ -23,7 +23,7 @@ optional<string_view> RawFlag::operator()() const noexcept {
     if (res == nullptr) {
         return nullopt;
     } else {
-        return std::move(string_view(res));
+        return string_view(res);
     }
 }
 
