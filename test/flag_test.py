@@ -1,8 +1,9 @@
 import subprocess as sp
 from pathlib import Path
+import sys
 import testa
 
-BASE_DIR = Path('../build/debug/test/').absolute()
+BASE_DIR = Path(sys.argv[0]).absolute().parent
 
 @testa.is_(expect=b'xixi')
 def str_flag():

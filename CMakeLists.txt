@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
-project(ENVFLAG VERSION 1.0)
+cmake_minimum_required(VERSION 3.22)
+project(ENVFLAG VERSION 1.1)
 
 add_compile_options(
-    $<$<COMPILE_LANGUAGE:CXX>:--std=c++17> $<$<COMPILE_LANGUAGE:C>:--std=c17>
-    -fwrapv -Wall)
+    $<$<COMPILE_LANGUAGE:CXX>:--std=c++20> $<$<COMPILE_LANGUAGE:C>:--std=c17>
+    -fwrapv -Wall -DENABLE_STD_FORMAT)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Release")
     message(STATUS "release mode")

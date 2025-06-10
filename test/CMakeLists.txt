@@ -3,6 +3,8 @@ if(jsoncpp_FOUND)
     add_compile_options(-DENVFLAG_ENABLE_JSONCPP)
 endif()
 
+file(COPY flag_test.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_library(all_test_flags STATIC
     all_test_flags.cpp
 )

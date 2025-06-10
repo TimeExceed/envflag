@@ -52,16 +52,18 @@ int64_t parse_i64(const char* name, const string_view& str) noexcept {
     auto [ptr, ec] { from_chars(str.data(), str.data() + str.size(), result) };
     if (ec == std::errc::invalid_argument) {
         FASSERT(false)
-            (name)
+            ("env={}", name)
+            ("value={}", str)
             .what("That isn't a number.");
     } else if (ec == std::errc::result_out_of_range) {
         FASSERT(false)
-            (name)
+            ("env={}", name)
+            ("value={}", str)
             .what("This number is larger than an int64_t.");
     } else if (ptr != str.data() + str.size()) {
         FASSERT(false)
-            (name)
-            (str)
+            ("env={}", name)
+            ("value={}", str)
             .what("Not everything can be parsed.");
     }
     return result;
@@ -94,8 +96,8 @@ bool parse_bool(const char* name, const string_view& value) noexcept {
         return false;
     } else {
         FASSERT(false)
-            (name)
-            (value)
+            ("env={}", name)
+            ("value={}", value)
             .what("Unrecognized bool value.");
         return false;
     }
@@ -126,8 +128,8 @@ double parse_f64(const char* name, const string_view& value) noexcept {
         return res;
     }
     FASSERT(*s == '.')
-        (*s)
-        (value);
+        ("current={}", *s)
+        ("value={}", value);
     double base = 0.1;
     for(++s; s < e && isdigit(*s); ++s) {
         double d = *s - '0';
@@ -135,8 +137,8 @@ double parse_f64(const char* name, const string_view& value) noexcept {
         base *= 0.1;
     }
     FASSERT(s == e)
-        (*s)
-        (value);
+        ("current={}", *s)
+        ("value={}", value);
     return res;
 }
 } // namespace
@@ -163,9 +165,9 @@ namespace {
     ::Json::String errs;
     bool ok = reader->parse(value.data(), value.data() + value.size(), &res, &errs);
     FASSERT(ok)
-        (name)
-        (value)
-        (errs)
+        ("env={}", name)
+        ("value={}", value)
+        ("error={}", errs)
         .what("Invalid JSON text");
     return res;
 }
