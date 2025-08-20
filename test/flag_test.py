@@ -1,9 +1,10 @@
 import subprocess as sp
 from pathlib import Path
 import sys
-import testa
 
 BASE_DIR = Path(sys.argv[0]).absolute().parent
+sys.path.append(str(BASE_DIR.parent.parent.parent / 'testa/python'))
+import testa
 
 @testa.is_(expect=b'xixi')
 def str_flag():

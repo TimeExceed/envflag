@@ -72,9 +72,9 @@ public:
     ::std::optional<T> operator()() const noexcept {
         auto import_type = typeid(ConcreteClass).name();
         FASSERT(import_type == defined_type_)
-            (raw_flag_.name_)
-            (import_type)
-            (defined_type_)
+            .hint("raw flag: {}", raw_flag_.name_)
+            .hint("import type: {}", import_type)
+            .hint("defined type: {}", defined_type_)
             .what("A flag has different types between its definition and importation.");
         auto res = raw_flag_();
         if (res) {

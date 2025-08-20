@@ -52,18 +52,18 @@ int64_t parse_i64(const char* name, const string_view& str) noexcept {
     auto [ptr, ec] { from_chars(str.data(), str.data() + str.size(), result) };
     if (ec == std::errc::invalid_argument) {
         FASSERT(false)
-            ("env={}", name)
-            ("value={}", str)
+            .hint("env={}", name)
+            .hint("value={}", str)
             .what("That isn't a number.");
     } else if (ec == std::errc::result_out_of_range) {
         FASSERT(false)
-            ("env={}", name)
-            ("value={}", str)
+            .hint("env={}", name)
+            .hint("value={}", str)
             .what("This number is larger than an int64_t.");
     } else if (ptr != str.data() + str.size()) {
         FASSERT(false)
-            ("env={}", name)
-            ("value={}", str)
+            .hint("env={}", name)
+            .hint("value={}", str)
             .what("Not everything can be parsed.");
     }
     return result;
@@ -96,8 +96,8 @@ bool parse_bool(const char* name, const string_view& value) noexcept {
         return false;
     } else {
         FASSERT(false)
-            ("env={}", name)
-            ("value={}", value)
+            .hint("env={}", name)
+            .hint("value={}", value)
             .what("Unrecognized bool value.");
         return false;
     }
@@ -128,8 +128,8 @@ double parse_f64(const char* name, const string_view& value) noexcept {
         return res;
     }
     FASSERT(*s == '.')
-        ("current={}", *s)
-        ("value={}", value);
+        .hint("current={}", *s)
+        .hint("value={}", value);
     double base = 0.1;
     for(++s; s < e && isdigit(*s); ++s) {
         double d = *s - '0';
@@ -137,8 +137,8 @@ double parse_f64(const char* name, const string_view& value) noexcept {
         base *= 0.1;
     }
     FASSERT(s == e)
-        ("current={}", *s)
-        ("value={}", value);
+        .hint("current={}", *s)
+        .hint("value={}", value);
     return res;
 }
 } // namespace
@@ -165,9 +165,9 @@ namespace {
     ::Json::String errs;
     bool ok = reader->parse(value.data(), value.data() + value.size(), &res, &errs);
     FASSERT(ok)
-        ("env={}", name)
-        ("value={}", value)
-        ("error={}", errs)
+        .hint("env={}", name)
+        .hint("value={}", value)
+        .hint("error={}", errs)
         .what("Invalid JSON text");
     return res;
 }
